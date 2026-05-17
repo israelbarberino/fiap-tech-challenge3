@@ -1,0 +1,45 @@
+server:
+  port: ${SERVER_PORT:8081}
+
+spring:
+  application:
+    name: appointment-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hospital_platform}
+    username: ${SPRING_DATASOURCE_USERNAME:hospital}
+    password: ${SPRING_DATASOURCE_PASSWORD:hospital}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: schema_appointment
+  flyway:
+    enabled: true
+    default-schema: schema_appointment
+    schemas: schema_appointment
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:hospital}
+    password: ${SPRING_RABBITMQ_PASSWORD:hospital}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+app:
+  security:
+    jwt:
+      secret: ${APP_SECURITY_JWT_SECRET:change-me-in-local-please-use-a-very-long-secret-key-1234567890}
+      expiration-minutes: ${APP_SECURITY_JWT_EXPIRATION_MINUTES:120}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSS} %-5level [%X{correlationId}] %logger{36} - %msg%n"

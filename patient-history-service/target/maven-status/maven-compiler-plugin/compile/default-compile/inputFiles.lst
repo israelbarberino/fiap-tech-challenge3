@@ -1,0 +1,13 @@
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\config\CorrelationIdFilter.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\config\HistoryRabbitConfiguration.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\config\SecurityConfiguration.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\consumer\AppointmentHistoryConsumer.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\domain\ConsultationHistoryEntity.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\graphql\HistoryGraphqlController.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\graphql\HistorySpecifications.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\PatientHistoryServiceApplication.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\repository\ConsultationHistoryRepository.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\security\AuthenticatedUser.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\security\JwtAuthenticationFilter.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\security\JwtService.java
+C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\patient-history-service\src\main\java\br\com\fiap\hospital\history\service\HistoryProjectionService.java

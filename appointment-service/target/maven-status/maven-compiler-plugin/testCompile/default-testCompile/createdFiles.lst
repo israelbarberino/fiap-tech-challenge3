@@ -1,0 +1,2 @@
+br\com\fiap\hospital\appointment\repository\AppointmentRepositoryIntegrationTest.class
+br\com\fiap\hospital\appointment\security\JwtServiceTest.class

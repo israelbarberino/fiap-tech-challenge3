@@ -1,0 +1,28 @@
+type Query {
+  consultationHistory(filter: HistoryFilterInput, page: Int = 0, size: Int = 20): ConsultationHistoryPage!
+}
+
+input HistoryFilterInput {
+  patientId: ID
+  doctorId: ID
+  from: String
+  to: String
+  status: String
+}
+
+type ConsultationHistoryPage {
+  items: [ConsultationHistoryItem!]!
+  page: Int!
+  size: Int!
+  totalElements: Int!
+}
+
+type ConsultationHistoryItem {
+  appointmentId: ID!
+  patientId: ID!
+  doctorId: ID!
+  scheduledAt: String!
+  notes: String
+  status: String!
+  sourceEventType: String!
+}

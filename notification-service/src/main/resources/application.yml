@@ -1,0 +1,43 @@
+server:
+  port: ${SERVER_PORT:8082}
+
+spring:
+  application:
+    name: notification-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hospital_platform}
+    username: ${SPRING_DATASOURCE_USERNAME:hospital}
+    password: ${SPRING_DATASOURCE_PASSWORD:hospital}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: schema_notification
+  flyway:
+    enabled: true
+    default-schema: schema_notification
+    schemas: schema_notification
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:hospital}
+    password: ${SPRING_RABBITMQ_PASSWORD:hospital}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+notification:
+  retry:
+    delay-ms: ${NOTIFICATION_RETRY_DELAY_MS:60000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSS} %-5level [%X{correlationId}] %logger{36} - %msg%n"

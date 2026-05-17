@@ -1,0 +1,15 @@
+query HistoryPage($patientId: ID!, $page: Int!, $size: Int!, $status: String) {
+  consultationHistory(filter: { patientId: $patientId, status: $status }, page: $page, size: $size) {
+    items {
+      appointmentId
+      patientId
+      doctorId
+      scheduledAt
+      status
+      notes
+    }
+    page
+    size
+    totalElements
+  }
+}

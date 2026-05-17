@@ -1,0 +1,16 @@
+br\com\fiap\hospital\history\PatientHistoryServiceApplication.class
+br\com\fiap\hospital\history\graphql\HistoryGraphqlController.class
+br\com\fiap\hospital\history\service\HistoryProjectionService.class
+br\com\fiap\hospital\history\config\HistoryRabbitConfiguration.class
+br\com\fiap\hospital\history\consumer\AppointmentHistoryConsumer.class
+br\com\fiap\hospital\history\graphql\HistoryGraphqlController$ConsultationHistoryItem.class
+br\com\fiap\hospital\history\security\JwtService.class
+br\com\fiap\hospital\history\graphql\HistoryGraphqlController$ConsultationHistoryPage.class
+br\com\fiap\hospital\history\repository\ConsultationHistoryRepository.class
+br\com\fiap\hospital\history\config\CorrelationIdFilter.class
+br\com\fiap\hospital\history\graphql\HistorySpecifications$HistoryFilterInput.class
+br\com\fiap\hospital\history\security\JwtAuthenticationFilter.class
+br\com\fiap\hospital\history\security\AuthenticatedUser.class
+br\com\fiap\hospital\history\config\SecurityConfiguration.class
+br\com\fiap\hospital\history\graphql\HistorySpecifications.class
+br\com\fiap\hospital\history\domain\ConsultationHistoryEntity.class
