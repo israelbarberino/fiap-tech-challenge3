@@ -1,9 +1,0 @@
-C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\notification-service\src\main\java\br\com\fiap\hospital\notification\config\JacksonConfig.java
-C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\notification-service\src\main\java\br\com\fiap\hospital\notification\config\NotificationRabbitConfiguration.java
-C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\notification-service\src\main\java\br\com\fiap\hospital\notification\consumer\AppointmentEventConsumer.java
-C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\notification-service\src\main\java\br\com\fiap\hospital\notification\domain\NotificationLogEntity.java
-C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\notification-service\src\main\java\br\com\fiap\hospital\notification\domain\NotificationStatus.java
-C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\notification-service\src\main\java\br\com\fiap\hospital\notification\NotificationServiceApplication.java
-C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\notification-service\src\main\java\br\com\fiap\hospital\notification\repository\NotificationLogRepository.java
-C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\notification-service\src\main\java\br\com\fiap\hospital\notification\scheduler\NotificationRetryScheduler.java
-C:\Users\iluiz\Documents\MyProjects\fiap-tech-challenge3\notification-service\src\main\java\br\com\fiap\hospital\notification\service\NotificationService.java

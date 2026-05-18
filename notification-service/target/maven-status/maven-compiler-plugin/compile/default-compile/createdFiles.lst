@@ -1,9 +1,0 @@
-br\com\fiap\hospital\notification\domain\NotificationStatus.class
-br\com\fiap\hospital\notification\NotificationServiceApplication.class
-br\com\fiap\hospital\notification\scheduler\NotificationRetryScheduler.class
-br\com\fiap\hospital\notification\consumer\AppointmentEventConsumer.class
-br\com\fiap\hospital\notification\service\NotificationService.class
-br\com\fiap\hospital\notification\domain\NotificationLogEntity.class
-br\com\fiap\hospital\notification\config\JacksonConfig.class
-br\com\fiap\hospital\notification\repository\NotificationLogRepository.class
-br\com\fiap\hospital\notification\config\NotificationRabbitConfiguration.class
