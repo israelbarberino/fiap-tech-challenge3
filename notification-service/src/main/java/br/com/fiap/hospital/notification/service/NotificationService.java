@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.time.OffsetDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,15 +35,19 @@ public class NotificationService {
             return;
         }
 
-        NotificationLogEntity entity = new NotificationLogEntity();
-        entity.setEventFingerprint(fingerprint);
-        entity.setEventType(event.eventType());
-        entity.setAppointmentId(event.appointmentId());
-        entity.setPatientId(event.patientId());
-        entity.setPayloadJson(payload);
-        entity.setStatus(NotificationStatus.PENDING);
-        repository.save(entity);
-        deliver(entity);
+        try {
+            NotificationLogEntity entity = new NotificationLogEntity();
+            entity.setEventFingerprint(fingerprint);
+            entity.setEventType(event.eventType());
+            entity.setAppointmentId(event.appointmentId());
+            entity.setPatientId(event.patientId());
+            entity.setPayloadJson(payload);
+            entity.setStatus(NotificationStatus.PENDING);
+            repository.saveAndFlush(entity);
+            deliver(entity);
+        } catch (DataIntegrityViolationException exception) {
+            log.info("notification event already registered fingerprint={}", fingerprint);
+        }
     }
 
     @Transactional
