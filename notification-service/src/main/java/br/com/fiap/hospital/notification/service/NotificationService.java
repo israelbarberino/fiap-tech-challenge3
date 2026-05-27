@@ -11,6 +11,7 @@ import java.time.OffsetDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +22,13 @@ public class NotificationService {
 
     private final NotificationLogRepository repository;
     private final ObjectMapper objectMapper;
+    private final int maxRetryAttempts;
 
-    public NotificationService(NotificationLogRepository repository, ObjectMapper objectMapper) {
+    public NotificationService(NotificationLogRepository repository, ObjectMapper objectMapper,
+                               @Value("${notification.retry.max-attempts:3}") int maxRetryAttempts) {
         this.repository = repository;
         this.objectMapper = objectMapper;
+        this.maxRetryAttempts = maxRetryAttempts;
     }
 
     @Transactional
@@ -52,7 +56,8 @@ public class NotificationService {
 
     @Transactional
     public void retryFailedNotifications() {
-        repository.findTop20ByStatusOrderByCreatedAtAsc(NotificationStatus.FAILED).forEach(this::deliver);
+        repository.findTop20ByStatusAndRetryCountLessThanOrderByCreatedAtAsc(NotificationStatus.FAILED, maxRetryAttempts)
+                .forEach(this::deliver);
     }
 
     @Transactional
@@ -66,7 +71,7 @@ public class NotificationService {
             entity.setStatus(NotificationStatus.SENT);
             repository.save(entity);
         } catch (Exception exception) {
-            entity.setStatus(NotificationStatus.FAILED);
+            entity.setStatus(entity.getRetryCount() >= maxRetryAttempts ? NotificationStatus.DEAD_LETTER : NotificationStatus.FAILED);
             repository.save(entity);
             log.warn("notification processing failed appointmentId={} fingerprint={}", entity.getAppointmentId(), entity.getEventFingerprint(), exception);
         }

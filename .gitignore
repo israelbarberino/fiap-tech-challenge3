@@ -4,6 +4,17 @@
 # Maven build output
 **/target/
 
+# Local environment files
+.env.local
+
+# Temporary validation scripts/results
+tmp/
+
+# Local extracted artifacts
+docs/ADJT.txt
+docs/ADJT-extracted.txt
+docs/images/*.txt
+
 # Log file
 *.log
 

@@ -22,7 +22,7 @@ class NotificationServiceTest {
         when(repository.findByEventFingerprint(any())).thenReturn(Optional.empty());
         when(repository.saveAndFlush(any())).thenThrow(new DataIntegrityViolationException("duplicate fingerprint"));
 
-        NotificationService service = new NotificationService(repository, new ObjectMapper().findAndRegisterModules());
+        NotificationService service = new NotificationService(repository, new ObjectMapper().findAndRegisterModules(), 3);
 
         service.registerEvent(new AppointmentEvent(
                 "APPOINTMENT_CREATED",

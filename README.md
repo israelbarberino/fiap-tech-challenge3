@@ -62,7 +62,16 @@ Regras aplicadas:
 ### Infraestrutura
 
 ```bash
-docker compose up -d postgres rabbitmq
+copy .env.local.example .env.local
+docker compose --env-file .env.local up -d postgres rabbitmq
+```
+
+Se quiser subir tudo em um comando, mantenha os valores locais em `.env.local` para evitar segredos inline no compose.
+
+Quando trocar credenciais de banco ou broker, recrie os volumes locais para reaplicar usuários/senhas iniciais:
+
+```bash
+docker compose --env-file .env.local down -v
 ```
 
 ### Aplicações
@@ -76,7 +85,7 @@ mvn -pl patient-history-service spring-boot:run
 ### Ou tudo via Compose
 
 ```bash
-docker compose up --build
+docker compose --env-file .env.local up --build
 ```
 
 ## Portas
@@ -102,6 +111,13 @@ docker compose up --build
 - `GET /api/v1/appointments`
 - `DELETE /api/v1/appointments/{id}`
 - `POST /graphql`
+
+## Validação e recuperação
+
+- Se o Docker Compose falhar na primeira subida, verifique se `.env.local` existe e se o Docker Desktop está ativo.
+- Se um token JWT for inválido ou expirado, a API responde com `401 Unauthorized`.
+- O serviço de notificações limita tentativas de reprocessamento e encerra eventos recorrentes em estado `DEAD_LETTER`.
+- O histórico GraphQL limita paginação a um tamanho máximo de 100 itens por página.
 
 ## Swagger
 
@@ -135,6 +151,17 @@ query HistoryPage($patientId: ID!, $page: Int!, $size: Int!) {
 - Modelagem: [docs/modeling.md](docs/modeling.md)
 - GraphQL: [docs/graphql-examples.graphql](docs/graphql-examples.graphql)
 - Postman: [docs/postman/hospital-platform.postman_collection.json](docs/postman/hospital-platform.postman_collection.json)
+- Postman Environment: [docs/postman/hospital-platform.local.postman_environment.json](docs/postman/hospital-platform.local.postman_environment.json)
+
+## Teste rápido com Postman
+
+1. Suba o ambiente com `docker compose --env-file .env.local up -d --build`.
+2. Importe a collection e o environment local da pasta `docs/postman`.
+3. Selecione o environment `Hospital Platform Local`.
+4. Execute a pasta `00 - Auth` para popular o token automaticamente.
+5. Execute em sequência: `Appointments - Create`, `Appointments - List`, `Appointments - Get By Id`, `Appointments - Update` e `History - GraphQL`.
+
+A collection já possui scripts de teste para validar status HTTP (200/201) e salvar `appointmentId` para os próximos requests.
 
 ## Observabilidade
 

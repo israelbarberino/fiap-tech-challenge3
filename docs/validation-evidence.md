@@ -4,11 +4,11 @@ Data: 2026-05-17 21:21:19 -03:00
 ## Docker Compose
 ```text
 NAME                                             IMAGE                                          COMMAND                  SERVICE                   CREATED       STATUS                 PORTS
-fiap-tech-challenge3-appointment-service-1       fiap-tech-challenge3-appointment-service       "java -jar /app/app.�Ǫ"   appointment-service       3 hours ago   Up 3 hours             0.0.0.0:8081->8081/tcp, [::]:8081->8081/tcp
-fiap-tech-challenge3-notification-service-1      fiap-tech-challenge3-notification-service      "java -jar /app/app.�Ǫ"   notification-service      3 hours ago   Up 3 hours             0.0.0.0:8082->8082/tcp, [::]:8082->8082/tcp
-fiap-tech-challenge3-patient-history-service-1   fiap-tech-challenge3-patient-history-service   "java -jar /app/app.�Ǫ"   patient-history-service   3 hours ago   Up 3 hours             0.0.0.0:8083->8083/tcp, [::]:8083->8083/tcp
-hospital-postgres                                postgres:15-alpine                             "docker-entrypoint.s�Ǫ"   postgres                  3 hours ago   Up 3 hours (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
-hospital-rabbitmq                                rabbitmq:3.13-management-alpine                "docker-entrypoint.s�Ǫ"   rabbitmq                  3 hours ago   Up 3 hours (healthy)   0.0.0.0:5672->5672/tcp, [::]:5672->5672/tcp, 0.0.0.0:15672->15672/tcp, [::]:15672->15672/tcp
+fiap-tech-challenge3-appointment-service-1       fiap-tech-challenge3-appointment-service       "java -jar /app/app.�Ǫ"   appointment-service       3 hours ago   Up 3 hours             0.0.0.0:8081->8081/tcp, [::]:8081->8081/tcp
+fiap-tech-challenge3-notification-service-1      fiap-tech-challenge3-notification-service      "java -jar /app/app.�Ǫ"   notification-service      3 hours ago   Up 3 hours             0.0.0.0:8082->8082/tcp, [::]:8082->8082/tcp
+fiap-tech-challenge3-patient-history-service-1   fiap-tech-challenge3-patient-history-service   "java -jar /app/app.�Ǫ"   patient-history-service   3 hours ago   Up 3 hours             0.0.0.0:8083->8083/tcp, [::]:8083->8083/tcp
+hospital-postgres                                postgres:15-alpine                             "docker-entrypoint.s�Ǫ"   postgres                  3 hours ago   Up 3 hours (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+hospital-rabbitmq                                rabbitmq:3.13-management-alpine                "docker-entrypoint.s�Ǫ"   rabbitmq                  3 hours ago   Up 3 hours (healthy)   0.0.0.0:5672->5672/tcp, [::]:5672->5672/tcp, 0.0.0.0:15672->15672/tcp, [::]:15672->15672/tcp
 ```
 
 ## Healthchecks
@@ -31,4 +31,30 @@ graphqlResponse: {"data":{"consultationHistory":{"totalElements":5,"items":[{"ap
 ## Maven Test
 ```text
 mvn -q test: SUCCESS
+```
+
+## Evidencia complementar (2026-05-26)
+
+```text
+docker compose ps:
+- appointment-service: Up (8081)
+- notification-service: Up (8082)
+- patient-history-service: Up (8083)
+- postgres: Up (healthy)
+- rabbitmq: Up (healthy)
+
+curl login (PowerShell, payload JSON escapado): __STATUS:200
+```
+
+Fluxo E2E consolidado (arquivo de evidencias):
+
+```text
+tmp/api-results.json
+- login: 200
+- create: 200
+- list: 200
+- get: 200
+- update: 200
+- graphql: 200
+- invalidToken: 401 (comportamento esperado)
 ```

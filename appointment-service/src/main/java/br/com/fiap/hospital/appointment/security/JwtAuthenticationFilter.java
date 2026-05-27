@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,13 +26,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null && header.startsWith("Bearer ")) {
-            AuthenticatedUser user = jwtService.parseToken(header.substring(7));
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    user,
-                    null,
-                    java.util.List.of(new SimpleGrantedAuthority(user.role().name()))
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            try {
+                AuthenticatedUser user = jwtService.parseToken(header.substring(7));
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        user,
+                        null,
+                        java.util.List.of(new SimpleGrantedAuthority(user.role().name()))
+                );
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (RuntimeException exception) {
+                SecurityContextHolder.clearContext();
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid or expired token");
+                return;
+            }
         }
         filterChain.doFilter(request, response);
     }

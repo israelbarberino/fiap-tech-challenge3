@@ -12,6 +12,7 @@ import br.com.fiap.hospital.appointment.security.AuthenticatedUser;
 import br.com.fiap.hospital.sharedkernel.appointment.AppointmentEvent;
 import br.com.fiap.hospital.sharedkernel.appointment.AppointmentEventType;
 import br.com.fiap.hospital.sharedkernel.security.UserRole;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
@@ -49,6 +50,9 @@ public class AppointmentService {
     public AppointmentResponse update(UUID id, AppointmentUpdateRequest request, AuthenticatedUser currentUser) {
         AppointmentEntity entity = findOwnedAppointment(id, currentUser);
         if (request.scheduledAt() != null) {
+            if (!request.scheduledAt().isAfter(OffsetDateTime.now())) {
+                throw new BusinessException("scheduledAt must be in the future");
+            }
             entity.setScheduledAt(request.scheduledAt());
         }
         if (request.notes() != null) {

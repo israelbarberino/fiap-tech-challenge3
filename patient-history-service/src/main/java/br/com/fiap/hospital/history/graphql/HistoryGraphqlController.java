@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class HistoryGraphqlController {
 
+    private static final int MAX_PAGE_SIZE = 100;
+
     private final ConsultationHistoryRepository repository;
 
     public HistoryGraphqlController(ConsultationHistoryRepository repository) {
@@ -27,12 +29,14 @@ public class HistoryGraphqlController {
                                                         @Argument Integer page,
                                                         @Argument Integer size) {
         AuthenticatedUser currentUser = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        int pageNumber = page == null ? 0 : page;
-        int pageSize = size == null ? 20 : size;
+        int pageNumber = page == null ? 0 : Math.max(page, 0);
+        int pageSize = size == null ? 20 : Math.min(Math.max(size, 1), MAX_PAGE_SIZE);
         Specification<ConsultationHistoryEntity> specification = HistorySpecifications.from(filter, currentUser);
         Page<ConsultationHistoryEntity> result = repository.findAll(specification, PageRequest.of(pageNumber, pageSize));
         List<ConsultationHistoryItem> items = result.getContent().stream().map(HistoryGraphqlController::toItem).toList();
-        return new ConsultationHistoryPage(items, pageNumber, pageSize, Math.toIntExact(result.getTotalElements()));
+        long totalElements = result.getTotalElements();
+        int totalElementsInt = totalElements > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) totalElements;
+        return new ConsultationHistoryPage(items, pageNumber, pageSize, totalElementsInt);
     }
 
     private static ConsultationHistoryItem toItem(ConsultationHistoryEntity entity) {

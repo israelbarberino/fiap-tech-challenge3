@@ -12,4 +12,6 @@ public interface NotificationLogRepository extends JpaRepository<NotificationLog
     Optional<NotificationLogEntity> findByEventFingerprint(String eventFingerprint);
 
     List<NotificationLogEntity> findTop20ByStatusOrderByCreatedAtAsc(NotificationStatus status);
+
+    List<NotificationLogEntity> findTop20ByStatusAndRetryCountLessThanOrderByCreatedAtAsc(NotificationStatus status, int retryCount);
 }
