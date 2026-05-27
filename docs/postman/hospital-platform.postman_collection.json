@@ -1,0 +1,275 @@
+{
+  "info": {
+    "name": "Hospital Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const isLoginRequest = pm.info.requestName === 'Auth - Login';",
+          "if (isLoginRequest) {",
+          "  return;",
+          "}",
+          "",
+          "const token = pm.environment.get('token');",
+          "const tokenExpiresAt = Number(pm.environment.get('tokenExpiresAt') || 0);",
+          "const refreshWindowMs = 30 * 1000;",
+          "const tokenStillValid = token && tokenExpiresAt && Date.now() < (tokenExpiresAt - refreshWindowMs);",
+          "",
+          "if (tokenStillValid) {",
+          "  return;",
+          "}",
+          "",
+          "const appointmentBaseUrl = pm.environment.get('appointmentBaseUrl');",
+          "const username = pm.environment.get('username');",
+          "const password = pm.environment.get('password');",
+          "",
+          "if (!appointmentBaseUrl || !username || !password) {",
+          "  throw new Error('Defina appointmentBaseUrl, username e password no environment do Postman.');",
+          "}",
+          "",
+          "pm.sendRequest({",
+          "  url: `${appointmentBaseUrl}/api/v1/auth/login`,",
+          "  method: 'POST',",
+          "  header: { 'Content-Type': 'application/json' },",
+          "  body: {",
+          "    mode: 'raw',",
+          "    raw: JSON.stringify({ username, password })",
+          "  }",
+          "}, function (error, response) {",
+          "  if (error) {",
+          "    throw error;",
+          "  }",
+          "",
+          "  if (!response.ok) {",
+          "    throw new Error(`Falha ao autenticar automaticamente no Postman: ${response.code}`);",
+          "  }",
+          "",
+          "  const json = response.json();",
+          "  pm.environment.set('token', json.accessToken);",
+          "  pm.environment.set('userId', json.userId);",
+          "  pm.environment.set('role', json.role);",
+          "",
+          "  const expiresAt = Date.parse(json.expiresAt);",
+          "  if (!Number.isNaN(expiresAt)) {",
+          "    pm.environment.set('tokenExpiresAt', String(expiresAt));",
+          "  } else {",
+          "    pm.environment.set('tokenExpiresAt', String(Date.now() + (110 * 60 * 1000)));",
+          "  }",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth - Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Login retornou 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const json = pm.response.json();",
+              "pm.environment.set('token', json.accessToken);",
+              "pm.environment.set('userId', json.userId);",
+              "pm.environment.set('role', json.role);",
+              "",
+              "const expiresAt = Date.parse(json.expiresAt);",
+              "if (!Number.isNaN(expiresAt)) {",
+              "  pm.environment.set('tokenExpiresAt', String(expiresAt));",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{appointmentBaseUrl}}/api/v1/auth/login",
+          "host": ["{{appointmentBaseUrl}}"],
+          "path": ["api", "v1", "auth", "login"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Appointments - Create",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const scheduledAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();",
+              "pm.environment.set('scheduledAt', scheduledAt);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Create retornou 200 ou 201', function () {",
+              "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "",
+              "const json = pm.response.json();",
+              "if (json && json.id) {",
+              "  pm.environment.set('appointmentId', json.id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{appointmentBaseUrl}}/api/v1/appointments",
+          "host": ["{{appointmentBaseUrl}}"],
+          "path": ["api", "v1", "appointments"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patientId\": \"{{patientId}}\",\n  \"doctorId\": \"{{userId}}\",\n  \"scheduledAt\": \"{{scheduledAt}}\",\n  \"notes\": \"Consulta criada via collection\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Appointments - List",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('List retornou 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{appointmentBaseUrl}}/api/v1/appointments",
+          "host": ["{{appointmentBaseUrl}}"],
+          "path": ["api", "v1", "appointments"]
+        }
+      }
+    },
+    {
+      "name": "Appointments - Get By Id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Get by id retornou 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{appointmentBaseUrl}}/api/v1/appointments/{{appointmentId}}",
+          "host": ["{{appointmentBaseUrl}}"],
+          "path": ["api", "v1", "appointments", "{{appointmentId}}"]
+        }
+      }
+    },
+    {
+      "name": "Appointments - Update",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Update retornou 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{appointmentBaseUrl}}/api/v1/appointments/{{appointmentId}}",
+          "host": ["{{appointmentBaseUrl}}"],
+          "path": ["api", "v1", "appointments", "{{appointmentId}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"notes\": \"Consulta atualizada via collection\"\n}"
+        }
+      }
+    },
+    {
+      "name": "GraphQL - History",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('GraphQL retornou 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{historyBaseUrl}}/graphql",
+          "host": ["{{historyBaseUrl}}"],
+          "path": ["graphql"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"query($patientId: ID!, $page: Int!, $size: Int!) { consultationHistory(filter: { patientId: $patientId }, page: $page, size: $size) { items { appointmentId patientId doctorId scheduledAt status notes } page size totalElements } }\",\n  \"variables\": {\n    \"patientId\": \"{{patientId}}\",\n    \"page\": 0,\n    \"size\": 10\n  }\n}"
+        }
+      }
+    }
+  ]
+}

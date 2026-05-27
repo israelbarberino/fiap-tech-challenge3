@@ -1,6 +1,20 @@
 # Compiled class file
 *.class
 
+# Maven build output
+**/target/
+
+# Local environment files
+.env.local
+
+# Temporary validation scripts/results
+tmp/
+
+# Local extracted artifacts
+docs/ADJT.txt
+docs/ADJT-extracted.txt
+docs/images/*.txt
+
 # Log file
 *.log
 
@@ -9,6 +23,14 @@
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
 
 # Package Files #
 *.jar
@@ -22,3 +44,5 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+**/target/
